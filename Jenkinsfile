@@ -1,11 +1,10 @@
 pipeline {
     agent any
 
-    stages {
         stage('Checkout') {
-            steps {
-                git 'https://github.com/RO8OT0V/ci-flask-demo'
-            }
+    	    steps {
+        	git branch: 'main', url: 'https://github.com/RO8OT0V/ci-flask-demo'
+    	    }
         }
 
         stage('Stop and Clean') {
