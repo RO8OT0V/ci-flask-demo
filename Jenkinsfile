@@ -4,32 +4,29 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/RO8OT0V/ci-flask-demo'
+                git branch: 'main', url: 'https://github.com/RO8OT0V/ci-flask-monitoring'
             }
         }
 
         stage('Stop and Clean') {
             steps {
                 sh '''
-                docker stop flask-app || true
-                docker rm flask-app || true
-                docker image rm flask-app || true
+                docker-compose down || true
                 docker image prune -f
                 '''
             }
         }
 
-        stage('Build Image') {
+        stage('Build and Deploy') {
             steps {
-                sh 'docker build -t flask-app .'
+                sh 'docker-compose up --build -d'
             }
         }
-
-        stage('Run Container') {
-            steps {
-                sh 'docker run -d --name flask-app -p 5000:5000 flask-app'
-            }
-        }
+	stage('Show logs') {
+    	    steps {
+        	sh 'docker-compose logs --tail=30'
+    	    }
+	}
     }
 }
 
