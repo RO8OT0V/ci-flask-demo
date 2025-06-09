@@ -22,6 +22,12 @@ pipeline {
                 sh 'docker-compose up --build -d'
             }
         }
+	stage('Debug prometheus.yml') {
+ 	   steps {
+       		sh 'ls -l ./prometheus'
+        	sh 'cat ./prometheus/prometheus.yml'
+    	    }
+	}
 	stage('Show logs') {
     	    steps {
         	sh 'docker-compose logs --tail=30'
