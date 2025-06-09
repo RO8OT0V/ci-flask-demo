@@ -10,29 +10,46 @@ pipeline {
 
         stage('Stop and Clean') {
             steps {
-                sh '''
-                docker-compose down || true
-                docker image prune -f
-                '''
+                dir("${WORKSPACE}") {
+                    sh '''
+                    echo "[CLEAN] Остановка и очистка"
+                    docker-compose down -v || true
+                    docker image prune -f || true
+                    '''
+                }
             }
         }
 
         stage('Build and Deploy') {
             steps {
-                sh 'docker-compose up --build -d'
+                dir("${WORKSPACE}") {
+                    sh '''
+                    docker-compose down -v || true
+                    docker-compose build --no-cache
+                    docker-compose up -d
+                    '''
+                }
             }
         }
-	stage('Debug prometheus.yml') {
- 	   steps {
-       		sh 'ls -l ./prometheus'
-        	sh 'cat ./prometheus/prometheus.yml'
-    	    }
-	}
-	stage('Show logs') {
-    	    steps {
-        	sh 'docker-compose logs --tail=30'
-    	    }
-	}
+
+        stage('Show logs') {
+            steps {
+                dir("${WORKSPACE}") {
+                    sh 'docker-compose logs --tail=30 || true'
+                }
+            }
+        }
+
+        stage('Debug mounts') {
+            steps {
+                dir("${WORKSPACE}") {
+                    sh '''
+                    echo "[DEBUG] Проверка наличия prometheus.yml"
+                    ls -l ./prometheus
+                    cat ./prometheus/prometheus.yml || echo "Файл не найден"
+                    '''
+                }
+            }
+        }
     }
 }
-
