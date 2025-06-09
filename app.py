@@ -1,8 +1,11 @@
 from flask import Flask
-app = Flask(__name__)
+from prometheus_flask_exporter import PrometheusMetrics
 
-@app.route('/')
-def hello():
+app = Flask(__name__)
+metrics = PrometheusMetrics(app)
+
+@app.route("/")
+def home():
     return "Привет, CI/CD работает!"
 
 if __name__ == '__main__':
