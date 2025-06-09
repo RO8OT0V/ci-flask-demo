@@ -9,9 +9,9 @@ services:
   prometheus:
     image: prom/prometheus
     command:
-      - '--config.file=/etc/prometheus/config.yml'
+      - '--config.file=/etc/prometheus/prometheus.yml'
     volumes:
-      - ./prometheus:/etc/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "8101:9090"
 
@@ -24,4 +24,3 @@ services:
 
 volumes:
   grafana-storage:
-
