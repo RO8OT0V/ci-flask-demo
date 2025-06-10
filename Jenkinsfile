@@ -39,17 +39,5 @@ pipeline {
                 }
             }
         }
-
-        stage('Debug mounts') {
-            steps {
-                dir("${WORKSPACE}") {
-                    sh '''
-                    echo "[DEBUG] Проверка наличия prometheus.yml"
-                    ls -l ./prometheus
-                    cat ./prometheus/prometheus.yml || echo "Файл не найден"
-                    '''
-                }
-            }
-        }
     }
 }
