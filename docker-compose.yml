@@ -5,15 +5,10 @@ services:
     build: .
     ports:
       - "5000:5000"
-
-  prometheus:
-    image: prom/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "8101:9090"
+    # Adding network configuration to make it discoverable by external Prometheus
+    networks:
+      - app-network
+      - default
 
   grafana:
     image: grafana/grafana
@@ -21,6 +16,15 @@ services:
       - "8102:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
+    networks:
+      - app-network
+      - default
 
 volumes:
   grafana-storage:
+
+# Create a named network that can be joined by the external Prometheus
+networks:
+  app-network:
+    name: app-monitoring
+    driver: bridge
